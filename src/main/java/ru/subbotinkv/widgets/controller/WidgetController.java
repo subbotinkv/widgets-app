@@ -77,11 +77,9 @@ public class WidgetController {
     })
     @DeleteMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_PROBLEM_JSON_VALUE})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> deleteWidget(@PathVariable Long id) {
+    public void deleteWidget(@PathVariable Long id) {
         boolean deleted = widgetService.deleteWidget(id);
-        if (deleted) {
-            return ResponseEntity.noContent().build();
-        } else {
+        if (!deleted) {
             throw new WidgetNotFoundException(id);
         }
     }
