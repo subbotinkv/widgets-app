@@ -8,6 +8,7 @@ import ru.subbotinkv.widgets.repository.IWidgetRepository;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
@@ -28,7 +29,6 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
 
             widgetStorage.put(widgetId, widget);
         } else {
-
             widget.setLastModifiedDate(ZonedDateTime.now());
             widgetStorage.replace(widgetId, widget);
         }
@@ -38,7 +38,7 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
 
     @Override
     public Collection<Widget> findAll() {
-        return widgetStorage.values();
+        return widgetStorage.values().stream().map(Widget::new).collect(Collectors.toList());
     }
 
     @Override
@@ -46,7 +46,7 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
         Assert.notNull(id, "Id must not be null");
 
         Widget widget = widgetStorage.get(id);
-        return widget != null ? Optional.of(widget) : Optional.empty();
+        return widget != null ? Optional.of(new Widget(widget)) : Optional.empty();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
     public Optional<Widget> findByZIndex(Integer zIndex) {
         Assert.notNull(zIndex, "Z-index must not be null");
 
-        return widgetStorage.values().stream().filter(widget -> widget.getZIndex().intValue() == zIndex.intValue()).findAny();
+        return widgetStorage.values().stream().filter(widget -> widget.getZIndex().intValue() == zIndex.intValue()).map(Widget::new).findAny();
     }
 
     @Override

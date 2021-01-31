@@ -15,6 +15,16 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 public class Widget {
 
+    public Widget(Widget widget) {
+        this.id = widget.id;
+        this.xCoordinate = widget.xCoordinate;
+        this.yCoordinate = widget.yCoordinate;
+        this.zIndex = widget.zIndex;
+        this.width = widget.width;
+        this.height = widget.height;
+        this.lastModifiedDate = widget.lastModifiedDate;
+    }
+
     private Long id;
 
     @NotNull

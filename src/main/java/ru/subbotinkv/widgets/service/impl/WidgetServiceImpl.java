@@ -126,12 +126,11 @@ public class WidgetServiceImpl implements IWidgetService {
                     break;
                 }
 
-                zIndex++;
                 Widget shiftingWidget = optWidget.get();
-                optWidget = widgetRepository.findByZIndex(zIndex);
-
-                shiftingWidget.setZIndex(zIndex);
+                shiftingWidget.setZIndex(++zIndex);
                 shiftingWidgets.add(shiftingWidget);
+
+                optWidget = widgetRepository.findByZIndex(zIndex);
             }
 
             widgetRepository.saveAll(shiftingWidgets);
