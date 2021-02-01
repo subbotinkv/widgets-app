@@ -4,9 +4,11 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.zalando.problem.violations.ConstraintViolationProblem;
 import ru.subbotinkv.widgets.dto.WidgetDto;
@@ -14,8 +16,10 @@ import ru.subbotinkv.widgets.exception.WidgetNotFoundException;
 import ru.subbotinkv.widgets.service.IWidgetService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
+@Validated
 @RestController
 @RequestMapping(value = "/api/widgets")
 @RequiredArgsConstructor
@@ -41,8 +45,11 @@ public class WidgetController {
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Collection<WidgetDto>> getAllWidgets() {
-        return new ResponseEntity<>(widgetService.getAllWidgets(), HttpStatus.OK);
+    public ResponseEntity<Page<WidgetDto>> getAllWidgets(
+            @RequestParam(defaultValue = "0") @Min(0) Integer page,
+            @RequestParam(defaultValue = "10") @Min(0) @Max(500) Integer size
+    ) {
+        return new ResponseEntity<>(widgetService.getAllWidgets(page, size), HttpStatus.OK);
     }
 
     @ApiOperation("Get a widget by id")

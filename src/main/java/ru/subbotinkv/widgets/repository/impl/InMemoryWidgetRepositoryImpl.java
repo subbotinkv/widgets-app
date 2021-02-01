@@ -1,6 +1,9 @@
 package ru.subbotinkv.widgets.repository.impl;
 
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import ru.subbotinkv.widgets.model.Widget;
@@ -39,11 +42,17 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
     }
 
     @Override
-    public Collection<Widget> findAllOrderByZetaIndexAsc() {
-        return widgetStorage.values().stream()
+    public Page<Widget> findAllOrderByZetaIndexAsc(Pageable pageable) {
+        Assert.notNull(pageable, "Paging information must not be null");
+
+        List<Widget> widgets = widgetStorage.values().stream()
                 .sorted(Comparator.comparingInt(Widget::getZetaIndex))
+                .skip(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .map(Widget::new)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(widgets, pageable, widgetStorage.size());
     }
 
     @Override

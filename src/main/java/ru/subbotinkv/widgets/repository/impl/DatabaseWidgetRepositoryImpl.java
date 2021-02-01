@@ -2,6 +2,8 @@ package ru.subbotinkv.widgets.repository.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import ru.subbotinkv.widgets.model.Widget;
@@ -26,8 +28,10 @@ public class DatabaseWidgetRepositoryImpl implements IWidgetRepository {
     }
 
     @Override
-    public Collection<Widget> findAllOrderByZetaIndexAsc() {
-        return widgetRepository.findAllByOrderByZetaIndexAsc();
+    public Page<Widget> findAllOrderByZetaIndexAsc(Pageable pageable) {
+        Assert.notNull(pageable, "Paging information must not be null");
+
+        return widgetRepository.findAllByOrderByZetaIndexAsc(pageable);
     }
 
     @Override

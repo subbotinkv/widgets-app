@@ -1,6 +1,9 @@
 package ru.subbotinkv.widgets.service.impl;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -10,7 +13,7 @@ import ru.subbotinkv.widgets.repository.IWidgetRepository;
 import ru.subbotinkv.widgets.service.IWidgetService;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -49,13 +52,17 @@ public class WidgetServiceImpl implements IWidgetService {
     }
 
     @Override
-    public Collection<WidgetDto> getAllWidgets() {
+    public Page<WidgetDto> getAllWidgets(Integer page, Integer size) {
+        Assert.notNull(page, "Page must not be null");
+        Assert.notNull(size, "Size must not be null");
+
         try {
             readLock.lock();
 
-            return widgetRepository.findAllOrderByZetaIndexAsc().stream()
-                    .map(source -> modelMapper.map(source, WidgetDto.class))
-                    .collect(Collectors.toList());
+            Page<Widget> widgets = widgetRepository.findAllOrderByZetaIndexAsc(PageRequest.of(page, size));
+            List<WidgetDto> widgetDtoList = widgets.getContent().stream().map(source -> modelMapper.map(source, WidgetDto.class)).collect(Collectors.toList());
+
+            return new PageImpl<>(widgetDtoList, widgets.getPageable(), widgets.getTotalElements());
         } finally {
             readLock.unlock();
         }

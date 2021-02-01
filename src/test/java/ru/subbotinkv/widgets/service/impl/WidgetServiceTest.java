@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.subbotinkv.widgets.dto.WidgetDto;
 import ru.subbotinkv.widgets.model.Widget;
@@ -15,7 +17,6 @@ import ru.subbotinkv.widgets.repository.IWidgetRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -88,6 +89,7 @@ class WidgetServiceTest {
 
         widgetService.createWidget(widgetDto);
 
+        //noinspection unchecked
         ArgumentCaptor<Collection<Widget>> widgetsArgument = ArgumentCaptor.forClass(ArrayList.class);
         verify(widgetRepository, times(0)).getMaxZIndex();
         verify(widgetRepository, times(1)).save(any());
@@ -112,6 +114,7 @@ class WidgetServiceTest {
 
         widgetService.createWidget(newWidgetDto);
 
+        //noinspection unchecked
         ArgumentCaptor<Collection<Widget>> widgetsArgument = ArgumentCaptor.forClass(ArrayList.class);
         verify(widgetRepository, times(0)).getMaxZIndex();
         verify(widgetRepository, times(1)).save(any());
@@ -141,6 +144,7 @@ class WidgetServiceTest {
 
         widgetService.createWidget(newWidgetDto);
 
+        //noinspection unchecked
         ArgumentCaptor<Collection<Widget>> widgetsArgument = ArgumentCaptor.forClass(ArrayList.class);
         verify(widgetRepository, times(0)).getMaxZIndex();
         verify(widgetRepository, times(1)).save(any());
@@ -156,10 +160,22 @@ class WidgetServiceTest {
     }
 
     @Test
-    void whenGetAllWidgets_thenFindAllOrderByZetaIndexAscIsCalled() {
-        widgetService.getAllWidgets();
+    void whenGetAllWidgetsAnsPageIsNull_thenException() {
+        assertThrows(IllegalArgumentException.class, () -> widgetService.getAllWidgets(null, 0));
+    }
 
-        verify(widgetRepository, times(1)).findAllOrderByZetaIndexAsc();
+    @Test
+    void whenGetAllWidgetsAndSizeIsNull_thenException() {
+        assertThrows(IllegalArgumentException.class, () -> widgetService.getAllWidgets(0, null));
+    }
+
+    @Test
+    void whenGetAllWidgets_thenFindAllOrderByZetaIndexAscIsCalled() {
+        when(widgetRepository.findAllOrderByZetaIndexAsc(PageRequest.of(0, 10))).thenReturn(Page.empty());
+
+        widgetService.getAllWidgets(0, 10);
+
+        verify(widgetRepository, times(1)).findAllOrderByZetaIndexAsc(any());
     }
 
     @Test
@@ -198,6 +214,7 @@ class WidgetServiceTest {
 
         widgetService.updateWidget(updatingWidgetDto);
 
+        //noinspection unchecked
         ArgumentCaptor<Collection<Widget>> widgetsArgument = ArgumentCaptor.forClass(ArrayList.class);
         verify(widgetRepository, times(0)).getMaxZIndex();
         verify(widgetRepository, times(1)).save(any());

@@ -17,6 +17,7 @@
 
 **Requirements (optional)**:
 
+* Paging: implement a pagination mechanism for a list of widgets;
 * SQL database: provide another storage implementation what works with SQL-database. The choice of storage implementation should be determined in the server configuration.
 
 ## Description

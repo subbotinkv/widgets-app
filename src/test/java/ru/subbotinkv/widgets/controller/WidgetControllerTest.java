@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.subbotinkv.widgets.dto.WidgetDto;
 import ru.subbotinkv.widgets.service.IWidgetService;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.mockito.Mockito.any;
@@ -71,11 +71,18 @@ class WidgetControllerTest {
 
     @Test
     void whenGetRequestToWidgets_thenOk() throws Exception {
-        when(widgetService.getAllWidgets()).thenReturn(Collections.emptyList());
+        when(widgetService.getAllWidgets(0, 10)).thenReturn(Page.empty());
 
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    void whenGetRequestToWidgetsAndInvalidPagingParams_thenBadRequest() throws Exception {
+        mockMvc.perform(get(BASE_URL + "/page=0&size=505"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON));
     }
 
     @Test
