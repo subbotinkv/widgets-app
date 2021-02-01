@@ -11,7 +11,6 @@ import ru.subbotinkv.widgets.service.IWidgetService;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -54,8 +53,7 @@ public class WidgetServiceImpl implements IWidgetService {
         try {
             readLock.lock();
 
-            return widgetRepository.findAll().stream()
-                    .sorted(Comparator.comparingInt(Widget::getZetaIndex))
+            return widgetRepository.findAllOrderByZetaIndexAsc().stream()
                     .map(source -> modelMapper.map(source, WidgetDto.class))
                     .collect(Collectors.toList());
         } finally {

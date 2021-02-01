@@ -39,8 +39,11 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
     }
 
     @Override
-    public Collection<Widget> findAll() {
-        return widgetStorage.values().stream().map(Widget::new).collect(Collectors.toList());
+    public Collection<Widget> findAllOrderByZetaIndexAsc() {
+        return widgetStorage.values().stream()
+                .sorted(Comparator.comparingInt(Widget::getZetaIndex))
+                .map(Widget::new)
+                .collect(Collectors.toList());
     }
 
     @Override

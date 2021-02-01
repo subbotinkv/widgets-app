@@ -156,16 +156,10 @@ class WidgetServiceTest {
     }
 
     @Test
-    void whenGetAllWidgets_thenCollectionIsSortedByZIndex() {
-        when(widgetRepository.findAll())
-                .thenReturn(List.of(Widget.builder().zetaIndex(3).build(),
-                        Widget.builder().zetaIndex(1).build(),
-                        Widget.builder().zetaIndex(2).build()));
+    void whenGetAllWidgets_thenFindAllOrderByZetaIndexAscIsCalled() {
+        widgetService.getAllWidgets();
 
-        List<WidgetDto> allWidgets = new ArrayList<>(widgetService.getAllWidgets());
-        assertEquals(1, allWidgets.get(0).getZetaIndex());
-        assertEquals(2, allWidgets.get(1).getZetaIndex());
-        assertEquals(3, allWidgets.get(2).getZetaIndex());
+        verify(widgetRepository, times(1)).findAllOrderByZetaIndexAsc();
     }
 
     @Test

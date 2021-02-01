@@ -26,8 +26,8 @@ public class DatabaseWidgetRepositoryImpl implements IWidgetRepository {
     }
 
     @Override
-    public Collection<Widget> findAll() {
-        return widgetRepository.findAll();
+    public Collection<Widget> findAllOrderByZetaIndexAsc() {
+        return widgetRepository.findAllByOrderByZetaIndexAsc();
     }
 
     @Override

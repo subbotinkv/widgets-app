@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface IWidgetRepository {
     Widget save(Widget widget);
 
-    Collection<Widget> findAll();
+    Collection<Widget> findAllOrderByZetaIndexAsc();
 
     Optional<Widget> findById(Long id);
 
