@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @ApiModel("Widget")
 @Data
@@ -36,7 +36,7 @@ public class WidgetDto {
 
     @ApiModelProperty(value = "Z-index", example = "0", required = true, position = 4)
     @JsonProperty("z_index")
-    private Integer zIndex;
+    private Integer zetaIndex;
 
     @ApiModelProperty(value = "Width", example = "100", required = true, position = 5)
     @NotNull
@@ -50,5 +50,5 @@ public class WidgetDto {
 
     @ApiModelProperty(value = "Last modification date", position = 7)
     @Null
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 }

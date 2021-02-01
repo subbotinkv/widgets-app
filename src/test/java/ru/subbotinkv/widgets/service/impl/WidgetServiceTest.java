@@ -57,7 +57,7 @@ class WidgetServiceTest {
         verify(widgetRepository, times(1)).save(widgetArgument.capture());
         verify(widgetRepository, times(0)).saveAll(any());
 
-        assertEquals(0, widgetArgument.getValue().getZIndex());
+        assertEquals(0, widgetArgument.getValue().getZetaIndex());
     }
 
     @Test
@@ -75,12 +75,12 @@ class WidgetServiceTest {
         verify(widgetRepository, times(1)).save(widgetArgument.capture());
         verify(widgetRepository, times(0)).saveAll(any());
 
-        assertEquals(maxZIndex + 1, widgetArgument.getValue().getZIndex());
+        assertEquals(maxZIndex + 1, widgetArgument.getValue().getZetaIndex());
     }
 
     @Test
     void whenCreateWidgetAndZIndexInTheGap_thenNoShift() {
-        WidgetDto widgetDto = WidgetDto.builder().zIndex(1).build();
+        WidgetDto widgetDto = WidgetDto.builder().zetaIndex(1).build();
         Widget widget = Widget.builder().build();
 
         when(widgetRepository.findByZIndex(any())).thenReturn(Optional.empty());
@@ -98,11 +98,11 @@ class WidgetServiceTest {
 
     @Test
     void whenCreateWidget_thenShiftTillTheEnd() {
-        Widget existingWidget1 = Widget.builder().id(1L).zIndex(1).build();
-        Widget existingWidget2 = Widget.builder().id(2L).zIndex(2).build();
-        Widget existingWidget3 = Widget.builder().id(3L).zIndex(3).build();
-        WidgetDto newWidgetDto = WidgetDto.builder().zIndex(2).build();
-        Widget newWidget = Widget.builder().id(4L).zIndex(2).build();
+        Widget existingWidget1 = Widget.builder().id(1L).zetaIndex(1).build();
+        Widget existingWidget2 = Widget.builder().id(2L).zetaIndex(2).build();
+        Widget existingWidget3 = Widget.builder().id(3L).zetaIndex(3).build();
+        WidgetDto newWidgetDto = WidgetDto.builder().zetaIndex(2).build();
+        Widget newWidget = Widget.builder().id(4L).zetaIndex(2).build();
 
         when(widgetRepository.findByZIndex(any()))
                 .thenReturn(Optional.of(existingWidget2))
@@ -122,17 +122,17 @@ class WidgetServiceTest {
         Optional<Widget> widget3 = widgetsArgument.getValue().stream().filter(widget -> widget.getId().longValue() == existingWidget3.getId().longValue()).findAny();
 
         assertTrue(widget1.isEmpty());
-        assertTrue(widget2.isPresent() && widget2.get().getZIndex() == 3);
-        assertTrue(widget3.isPresent() && widget3.get().getZIndex() == 4);
+        assertTrue(widget2.isPresent() && widget2.get().getZetaIndex() == 3);
+        assertTrue(widget3.isPresent() && widget3.get().getZetaIndex() == 4);
     }
 
     @Test
     void whenCreateWidget_thenShiftTillTheGap() {
-        Widget existingWidget1 = Widget.builder().id(1L).zIndex(1).build();
-        Widget existingWidget2 = Widget.builder().id(2L).zIndex(2).build();
-        Widget existingWidget3 = Widget.builder().id(3L).zIndex(4).build();
-        WidgetDto newWidgetDto = WidgetDto.builder().zIndex(2).build();
-        Widget newWidget = Widget.builder().id(4L).zIndex(2).build();
+        Widget existingWidget1 = Widget.builder().id(1L).zetaIndex(1).build();
+        Widget existingWidget2 = Widget.builder().id(2L).zetaIndex(2).build();
+        Widget existingWidget3 = Widget.builder().id(3L).zetaIndex(4).build();
+        WidgetDto newWidgetDto = WidgetDto.builder().zetaIndex(2).build();
+        Widget newWidget = Widget.builder().id(4L).zetaIndex(2).build();
 
         when(widgetRepository.findByZIndex(any()))
                 .thenReturn(Optional.of(existingWidget2))
@@ -151,21 +151,21 @@ class WidgetServiceTest {
         Optional<Widget> widget3 = widgetsArgument.getValue().stream().filter(widget -> widget.getId().longValue() == existingWidget3.getId().longValue()).findAny();
 
         assertTrue(widget1.isEmpty());
-        assertTrue(widget2.isPresent() && widget2.get().getZIndex() == 3);
+        assertTrue(widget2.isPresent() && widget2.get().getZetaIndex() == 3);
         assertTrue(widget3.isEmpty());
     }
 
     @Test
     void whenGetAllWidgets_thenCollectionIsSortedByZIndex() {
         when(widgetRepository.findAll())
-                .thenReturn(List.of(Widget.builder().zIndex(3).build(),
-                        Widget.builder().zIndex(1).build(),
-                        Widget.builder().zIndex(2).build()));
+                .thenReturn(List.of(Widget.builder().zetaIndex(3).build(),
+                        Widget.builder().zetaIndex(1).build(),
+                        Widget.builder().zetaIndex(2).build()));
 
         List<WidgetDto> allWidgets = new ArrayList<>(widgetService.getAllWidgets());
-        assertEquals(1, allWidgets.get(0).getZIndex());
-        assertEquals(2, allWidgets.get(1).getZIndex());
-        assertEquals(3, allWidgets.get(2).getZIndex());
+        assertEquals(1, allWidgets.get(0).getZetaIndex());
+        assertEquals(2, allWidgets.get(1).getZetaIndex());
+        assertEquals(3, allWidgets.get(2).getZetaIndex());
     }
 
     @Test
@@ -189,12 +189,12 @@ class WidgetServiceTest {
 
     @Test
     void whenUpdateWidget_thenShiftTillItself() {
-        Widget existingWidget1 = Widget.builder().id(1L).zIndex(1).build();
-        Widget existingWidget2 = Widget.builder().id(2L).zIndex(2).build();
-        Widget existingWidget3 = Widget.builder().id(3L).zIndex(3).build();
-        Widget existingWidget4 = Widget.builder().id(4L).zIndex(4).build();
-        WidgetDto updatingWidgetDto = WidgetDto.builder().id(3L).zIndex(2).build();
-        Widget newWidget = Widget.builder().id(3L).zIndex(2).build();
+        Widget existingWidget1 = Widget.builder().id(1L).zetaIndex(1).build();
+        Widget existingWidget2 = Widget.builder().id(2L).zetaIndex(2).build();
+        Widget existingWidget3 = Widget.builder().id(3L).zetaIndex(3).build();
+        Widget existingWidget4 = Widget.builder().id(4L).zetaIndex(4).build();
+        WidgetDto updatingWidgetDto = WidgetDto.builder().id(3L).zetaIndex(2).build();
+        Widget newWidget = Widget.builder().id(3L).zetaIndex(2).build();
 
         when(widgetRepository.findByZIndex(any()))
                 .thenReturn(Optional.of(existingWidget2))
@@ -215,7 +215,7 @@ class WidgetServiceTest {
         Optional<Widget> widget4 = widgetsArgument.getValue().stream().filter(widget -> widget.getId().longValue() == existingWidget4.getId().longValue()).findAny();
 
         assertTrue(widget1.isEmpty());
-        assertTrue(widget2.isPresent() && widget2.get().getZIndex() == 3);
+        assertTrue(widget2.isPresent() && widget2.get().getZetaIndex() == 3);
         assertTrue(widget3.isEmpty());
         assertTrue(widget4.isEmpty());
     }

@@ -4,27 +4,34 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Widget {
 
     public Widget(Widget widget) {
         this.id = widget.id;
         this.xCoordinate = widget.xCoordinate;
         this.yCoordinate = widget.yCoordinate;
-        this.zIndex = widget.zIndex;
+        this.zetaIndex = widget.zetaIndex;
         this.width = widget.width;
         this.height = widget.height;
         this.lastModifiedDate = widget.lastModifiedDate;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -34,7 +41,7 @@ public class Widget {
     private Integer yCoordinate;
 
     @NotNull
-    private Integer zIndex;
+    private Integer zetaIndex;
 
     @NotNull
     @Positive
@@ -44,5 +51,7 @@ public class Widget {
     @Positive
     private Integer height;
 
-    private ZonedDateTime lastModifiedDate;
+    @NotNull
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 }

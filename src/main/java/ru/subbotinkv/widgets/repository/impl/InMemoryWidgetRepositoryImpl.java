@@ -1,15 +1,17 @@
 package ru.subbotinkv.widgets.repository.impl;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 import ru.subbotinkv.widgets.model.Widget;
 import ru.subbotinkv.widgets.repository.IWidgetRepository;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+@Profile("map")
 @Repository
 public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
 
@@ -25,11 +27,11 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
             widgetId = idSequenceGenerator.getAndIncrement();
 
             widget.setId(widgetId);
-            widget.setLastModifiedDate(ZonedDateTime.now());
+            widget.setLastModifiedDate(LocalDateTime.now());
 
             widgetStorage.put(widgetId, widget);
         } else {
-            widget.setLastModifiedDate(ZonedDateTime.now());
+            widget.setLastModifiedDate(LocalDateTime.now());
             widgetStorage.replace(widgetId, widget);
         }
 
@@ -73,11 +75,11 @@ public class InMemoryWidgetRepositoryImpl implements IWidgetRepository {
     public Optional<Widget> findByZIndex(Integer zIndex) {
         Assert.notNull(zIndex, "Z-index must not be null");
 
-        return widgetStorage.values().stream().filter(widget -> widget.getZIndex().intValue() == zIndex.intValue()).map(Widget::new).findAny();
+        return widgetStorage.values().stream().filter(widget -> widget.getZetaIndex().intValue() == zIndex.intValue()).map(Widget::new).findAny();
     }
 
     @Override
     public Optional<Integer> getMaxZIndex() {
-        return widgetStorage.values().stream().map(Widget::getZIndex).max(Comparator.naturalOrder());
+        return widgetStorage.values().stream().map(Widget::getZetaIndex).max(Comparator.naturalOrder());
     }
 }

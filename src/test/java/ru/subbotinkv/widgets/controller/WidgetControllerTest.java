@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.subbotinkv.widgets.dto.WidgetDto;
 import ru.subbotinkv.widgets.service.IWidgetService;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(WidgetController.class)
+@WebMvcTest(value = WidgetController.class)
 class WidgetControllerTest {
 
     private static final String BASE_URL = "/api/widgets";
@@ -59,7 +59,7 @@ class WidgetControllerTest {
     void whenPostRequestToWidgetsAndInvalidWidget_thenBadRequest() throws Exception {
         WidgetDto widget = WidgetDto.builder()
                 .id(1L)
-                .lastModifiedDate(ZonedDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
                 .build();
 
         mockMvc.perform(post(BASE_URL)
@@ -104,7 +104,7 @@ class WidgetControllerTest {
         WidgetDto widget = WidgetDto.builder()
                 .xCoordinate(0)
                 .yCoordinate(0)
-                .zIndex(0)
+                .zetaIndex(0)
                 .width(100)
                 .height(100)
                 .build();
@@ -112,7 +112,7 @@ class WidgetControllerTest {
         WidgetDto createdWidget = WidgetDto.builder().id(1L)
                 .xCoordinate(0)
                 .yCoordinate(0)
-                .zIndex(0)
+                .zetaIndex(0)
                 .width(100)
                 .height(100)
                 .build();
@@ -131,7 +131,7 @@ class WidgetControllerTest {
         WidgetDto widget = WidgetDto.builder()
                 .xCoordinate(-1)
                 .yCoordinate(-1)
-                .lastModifiedDate(ZonedDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
                 .build();
 
         mockMvc.perform(put(BASE_URL + "/1")

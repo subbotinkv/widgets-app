@@ -15,6 +15,10 @@
 * At least 30% of the code should be covered by unit and integration tests;
 * Submit sources via a public git repository.
 
+**Requirements (optional)**:
+
+* SQL database: provide another storage implementation what works with SQL-database. The choice of storage implementation should be determined in the server configuration.
+
 ## Description
 
 ### TL;DR
@@ -22,9 +26,12 @@
 Build:
 
     $mvn clean install
-Run:
+Run (in-memory):
 
-    $mvn spring-boot:run
+    $mvn spring-boot:run -Drun.profiles=map
+Run (h2):
+
+    $mvn spring-boot:run -Drun.profiles=h2
 API:
 
     http://localhost:8080/api/widgets
@@ -49,7 +56,15 @@ All the logic related to widget management (z-index changes) is located in servi
 
 #### In-Memory storage
 
-HashMap collection class is used to organize the storage.
+HashMap collection class is used to organize the storage. Spring profile "map" should be used to activate this repository implementation.
+
+### SQL Database
+
+H2 is used as an embedded SQL database. Spring profile "h2" should be used to activate this repository implementation.
+Auto DDL generation provided by Spring boot is used to initialize the application database. 
+There is no unique constraint on z_index column in the database, because H2 (and also Derby & HSQLDB) doesn't support deferred constraints.
+Z-index uniqueness is controlled by application.
+
 
 ### Test Coverage
 

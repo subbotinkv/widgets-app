@@ -2,18 +2,23 @@ package ru.subbotinkv.widgets.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.subbotinkv.widgets.dto.WidgetDto;
 import ru.subbotinkv.widgets.model.Widget;
 import ru.subbotinkv.widgets.repository.IWidgetRepository;
 import ru.subbotinkv.widgets.service.IWidgetService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class WidgetServiceImpl implements IWidgetService {
 
@@ -50,7 +55,7 @@ public class WidgetServiceImpl implements IWidgetService {
             readLock.lock();
 
             return widgetRepository.findAll().stream()
-                    .sorted(Comparator.comparingInt(Widget::getZIndex))
+                    .sorted(Comparator.comparingInt(Widget::getZetaIndex))
                     .map(source -> modelMapper.map(source, WidgetDto.class))
                     .collect(Collectors.toList());
         } finally {
@@ -105,16 +110,16 @@ public class WidgetServiceImpl implements IWidgetService {
     }
 
     private WidgetDto saveWidget(WidgetDto widgetDto) {
-        if (widgetDto.getZIndex() == null) {
+        if (widgetDto.getZetaIndex() == null) {
             Optional<Integer> maxZIndex = widgetRepository.getMaxZIndex();
             int zIndex = 0;
             if (maxZIndex.isPresent()) {
                 zIndex = maxZIndex.get() + 1;
             }
 
-            widgetDto.setZIndex(zIndex);
+            widgetDto.setZetaIndex(zIndex);
         } else {
-            Integer zIndex = widgetDto.getZIndex();
+            Integer zIndex = widgetDto.getZetaIndex();
 
             ArrayList<Widget> shiftingWidgets = new ArrayList<>();
 
@@ -126,11 +131,12 @@ public class WidgetServiceImpl implements IWidgetService {
                     break;
                 }
 
+                zIndex++;
                 Widget shiftingWidget = optWidget.get();
-                shiftingWidget.setZIndex(++zIndex);
-                shiftingWidgets.add(shiftingWidget);
-
                 optWidget = widgetRepository.findByZIndex(zIndex);
+
+                shiftingWidget.setZetaIndex(zIndex);
+                shiftingWidgets.add(shiftingWidget);
             }
 
             widgetRepository.saveAll(shiftingWidgets);
