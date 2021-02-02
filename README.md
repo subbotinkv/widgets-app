@@ -59,7 +59,7 @@ All the logic related to widget management (z-index changes) is located in servi
 
 HashMap collection class is used to organize the storage. Spring profile "map" should be used to activate this repository implementation.
 
-### SQL Database
+#### SQL Database
 
 H2 is used as an embedded SQL database. Spring profile "h2" should be used to activate this repository implementation.
 Auto DDL generation provided by Spring boot is used to initialize the application database. 
@@ -69,4 +69,4 @@ Z-index uniqueness is controlled by application.
 
 ### Test Coverage
 
-![img.png](Test Coverage.png)
+![img.png](docs/Test%20Coverage.png)
